@@ -4,18 +4,39 @@ html {
  font-family: 'Poppins', sans-serif;
 }
 .App {
- background-color: $bg-color;
  min-height: 100vh;
  color: $fnt-color;
+ background-color: $bg-color;
+ padding-top: 2rem;
 }
 
 .registration {
  .form {
-  width: 100%;
-  height: 15rem;
+  height: auto;
   color: $fnt-color;
   background-color: $bg-color;
   border: 0.7rem solid #ffffff;
-  border-radius: 0.9rem;
+  border-radius: 1.5rem;
+  padding: 4rem;
+  input {
+   background-color: #ffffff;
+  }
+  &__title {
+   &-stepper {
+    background-color: $bg-color;
+    .MuiStepIcon-root,
+    .MuiStepIcon-completed {
+     color: $action-color;
+    }
+   }
+  }
+  &__button {
+   margin-top: 1rem;
+   background-color: $action-color;
+   color: #ffffff;
+   &:hover {
+    background-color: $action-light-color;
+   }
+  }
  }
 }
