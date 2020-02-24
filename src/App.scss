@@ -4,7 +4,7 @@ html {
  font-family: 'Poppins', sans-serif;
 }
 .App {
- min-height: 100vh;
+ min-height: 95vh;
  color: $fnt-color;
  background-color: $bg-color;
  padding-top: 2rem;
@@ -37,6 +37,62 @@ html {
    &:hover {
     background-color: $action-light-color;
    }
+  }
+ }
+ .notification {
+  &__title {
+   color: $action-color;
+  }
+  &__icon {
+   font-size: 8rem;
+   color: $action-color;
+  }
+ }
+}
+.log-in {
+ background-color: $bg-color;
+ .form {
+  padding-top: 12rem;
+  &__button {
+   margin-top: 1rem;
+   background-color: $action-color;
+   color: #ffffff;
+   &:hover {
+    background-color: $action-light-color;
+   }
+  }
+  &__button-register {
+   color: $action-color;
+   &:hover {
+    background-color: $bg-color;
+    color: $action-dark-color;
+   }
+  }
+  &__input {
+   background-color: #ffffff;
+  }
+ }
+}
+.account {
+ .form {
+  height: auto;
+  color: $fnt-color;
+  background-color: $bg-color;
+  border: 0.7rem solid #ffffff;
+  border-radius: 1.5rem;
+  padding: 4rem;
+  &__input {
+   background-color: #ffffff;
+  }
+  &__button {
+   background-color: $action-color;
+   color: #ffffff;
+   &:hover {
+    background-color: $action-light-color;
+   }
+  }
+  &__title {
+   margin-bottom: 1rem;
   }
  }
 }

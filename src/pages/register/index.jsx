@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
  Grid,
  Paper,
@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core'
 import { toast } from 'react-toastify'
 import { postUser } from '../../services/user.service'
+import MailIcon from '@material-ui/icons/Mail'
 
 function PersonalInformation({ values, handleChange }) {
  return (
@@ -215,7 +216,69 @@ function ViewSelector({ values, handleChange }) {
    return 'It seems to be a problem please refresh this page'
  }
 }
+function RegistrationForm({ values, handleChange, handleNext, handleBack }) {
+ return (
+  <Grid component="div" container direction="column">
+   <Box component="span" fontSize="h4.fontSize" className="form__title">
+    Registration Form
+   </Box>
+   <Stepper
+    alternativeLabel
+    activeStep={values.activeStep}
+    className="form__title-stepper"
+   >
+    <Step>
+     <StepLabel>Personal Information</StepLabel>
+    </Step>
+    <Step>
+     <StepLabel>Contact Information</StepLabel>
+    </Step>
+    <Step>
+     <StepLabel>Password</StepLabel>
+    </Step>
+   </Stepper>
+   <ViewSelector values={values} handleChange={handleChange} />
+   <Grid item m={3} container justify="space-between">
+    <Button
+     variant="contained"
+     onClick={handleBack}
+     className="form__button"
+     disableElevation
+     size="large"
+     disabled={values.activeStep === 1}
+    >
+     {'Back'}
+    </Button>
+    <Button
+     variant="contained"
+     onClick={handleNext}
+     className="form__button"
+     disableElevation
+     size="large"
+     disabled={values.forms[values.activeStep - 1]}
+    >
+     {values.activeStep === 3 ? 'Submit' : 'Next'}
+    </Button>
+   </Grid>
+  </Grid>
+ )
+}
 
+function RegisteredNotification(props) {
+ return (
+  <Grid component="div" container direction="column">
+   <Box component="span" fontSize="h4.fontSize" className="notification__title">
+    Registration Success!
+   </Box>
+   <Box component="p" fontSize="h5.fontSize" fontWeight="fontWeightThin">
+    A confirmation email has been sent so you can activate your account.
+   </Box>
+   <Grid component="div" container justify="center">
+    <MailIcon className="notification__icon" />
+   </Grid>
+  </Grid>
+ )
+}
 function RegisterPage(props) {
  const [values, setValues] = useState({
   activeStep: 1,
@@ -251,9 +314,21 @@ function RegisterPage(props) {
   },
   forms: [true, true, true],
  })
+ const [isRegistered, setIsRegistered] = useState(false)
 
- const notify = message => toast(message)
+ const notify = (message, error) => {
+  if (error) {
+   toast.error(message)
+  } else {
+   toast.success(message)
+  }
+ }
 
+ const handleBack = () => {
+  if (values.activeStep > 1) {
+   setValues({ ...values, activeStep: values.activeStep - 1 })
+  }
+ }
  const handleNext = () => {
   if (values.activeStep < 3) {
    setValues({ ...values, activeStep: values.activeStep + 1 })
@@ -264,11 +339,13 @@ function RegisterPage(props) {
     ...values.steps[2],
    }).then(
     response => {
-     notify('Registration Success!')
+     setIsRegistered(true)
     },
     error => {
-     console.log(error)
-     notify(`Ups it seems like ${error}`)
+     notify(
+      `Ups it seems like the identification number or email are already registered.`,
+      true
+     )
     }
    )
   }
@@ -362,40 +439,16 @@ function RegisterPage(props) {
   >
    <Grid component="div" item xs={12} sm={12} md={8}>
     <Paper elevation={1} className="form">
-     <Grid component="div" container direction="column">
-      <Box component="span" fontSize="h4.fontSize" className="form__title">
-       Registration Form
-      </Box>
-      <Stepper
-       alternativeLabel
-       activeStep={values.activeStep}
-       className="form__title-stepper"
-       color="#01a3ff"
-      >
-       <Step>
-        <StepLabel>Personal Information</StepLabel>
-       </Step>
-       <Step>
-        <StepLabel>Contact Information</StepLabel>
-       </Step>
-       <Step>
-        <StepLabel>Password</StepLabel>
-       </Step>
-      </Stepper>
-      <ViewSelector values={values} handleChange={handleChange} />
-      <Grid item m={3} container justify="flex-end">
-       <Button
-        variant="contained"
-        onClick={handleNext}
-        className="form__button"
-        disableElevation
-        size="large"
-        disabled={values.forms[values.activeStep - 1]}
-       >
-        {values.activeStep === 3 ? 'Submit' : 'Next'}
-       </Button>
-      </Grid>
-     </Grid>
+     {isRegistered ? (
+      <RegisteredNotification />
+     ) : (
+      <RegistrationForm
+       values={values}
+       handleChange={handleChange}
+       handleNext={handleNext}
+       handleBack={handleBack}
+      />
+     )}
     </Paper>
    </Grid>
   </Grid>
