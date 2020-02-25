@@ -5,13 +5,10 @@ import {
  Box,
  TextField,
  Button,
- Typography,
  MenuItem,
  Paper,
 } from '@material-ui/core'
 import { toast } from 'react-toastify'
-import { useUser } from '../../hooks/useUsers'
-import { postUser } from '../../services/user.service'
 import { postAccount } from '../../services/account.service'
 
 function CreateAccountPage(props) {

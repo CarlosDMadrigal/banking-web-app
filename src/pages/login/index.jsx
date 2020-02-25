@@ -12,6 +12,15 @@ function LogInPage(props) {
  const handleRegisterClick = () => {
   history.push('/register')
  }
+
+ const notify = (message, error) => {
+  if (error) {
+   toast.error(message)
+  } else {
+   toast(message)
+  }
+ }
+
  const handleLogInClick = () => {
   logIn(logInValues.email, logInValues.password).then(
    response => {
@@ -25,14 +34,6 @@ function LogInPage(props) {
  }
  const handleChange = props => event => {
   setLogInValues({ ...logInValues, [props]: event.target.value })
- }
-
- const notify = (message, error) => {
-  if (error) {
-   toast.error(message)
-  } else {
-   toast(message)
-  }
  }
  return (
   <Grid container justify="center" alignItems="center" m={2} className="log-in">

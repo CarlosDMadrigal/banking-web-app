@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import CreateAccountPage from './pages/createAccount'
+import DashBoardPage from './pages/dashboard'
 
 function App() {
  return (
@@ -14,6 +15,7 @@ function App() {
    <Router>
     <Switch>
      <Route path="/register" component={RegisterPage} />
+     <Route path="/dashboard" component={DashBoardPage} />
      <Route path="/account/create/:id" component={CreateAccountPage} />
      <Route path="/" component={LogInPage} />
      {/* <Route path="/registration/" component={RegisterPage} /> */}

@@ -1,5 +1,5 @@
 import { getUserByIdNumber } from '../services/user.service'
-import { useEffect, useState, React } from 'react'
+import { useEffect, useState } from 'react'
 
 export const useUser = id => {
  const [user, setUser] = useState({})
@@ -7,4 +7,6 @@ export const useUser = id => {
  useEffect(() => {
   setUser(getUserByIdNumber)
  }, [id])
+
+ return user
 }
