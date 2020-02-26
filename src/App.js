@@ -15,7 +15,7 @@ function App() {
    <Router>
     <Switch>
      <Route path="/register" component={RegisterPage} />
-     <Route path="/dashboard" component={DashBoardPage} />
+     <Route path="/dashboard/:id" component={DashBoardPage} />
      <Route path="/account/create/:id" component={CreateAccountPage} />
      <Route path="/" component={LogInPage} />
      {/* <Route path="/registration/" component={RegisterPage} /> */}
