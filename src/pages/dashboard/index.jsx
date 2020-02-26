@@ -21,17 +21,20 @@ import {
  TablePagination,
  MenuItem,
  InputAdornment,
+ CircularProgress,
 } from '@material-ui/core'
 import NumberFormat from 'react-number-format'
 import SideBar from '../../components/sidebar'
 import { Switch, Route } from 'react-router-dom'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { useAccounts } from '../../hooks/useAccounts'
+import { useTransactions } from '../../hooks/useTransactions'
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn'
 import { Doughnut } from 'react-chartjs-2'
 import { toast } from 'react-toastify'
-import { useCurrency } from '../../hooks/useCurrency'
+import { requestCurrency } from '../../services/currency.service'
 import { postTransaction } from '../../services/transaction.service'
+import ClearIcon from '@material-ui/icons/Clear'
 
 const headCells = [
  {
@@ -129,7 +132,9 @@ function AccountsCard(props) {
            </TableCell>
            <TableCell>{account.name}</TableCell>
            <TableCell>{account.currency}</TableCell>
-           <TableCell align="center">{account.balance}</TableCell>
+           <TableCell align="center">{`${
+            account.currency === 'USD' ? '$' : '₡'
+           } ${account.balance}`}</TableCell>
            <TableCell></TableCell>
           </TableRow>
          )
@@ -158,17 +163,23 @@ function AccountsCard(props) {
   </Grid>
  )
 }
-const data = {
- labels: ['Incomes', 'Expenses'],
- datasets: [
-  {
-   backgroundColor: ['#1eba62', '#e74c3c'],
-   data: [65, 59],
-  },
- ],
-}
 function MovementsCard(props) {
- let { isExpenses } = props
+ let { isExpenses, transactions, id } = props
+ const data = {
+  labels: ['Incomes', 'Expenses'],
+  datasets: [
+   {
+    backgroundColor: ['#1eba62', '#e74c3c'],
+    data: [0, 0],
+   },
+  ],
+ }
+
+ let transactionsFiltered = transactions.map(transaction => {
+  if (transaction.fromAccount.owner1.id !== transaction.toAccount.owner1.id) {
+   return transaction
+  }
+ })
  return (
   <Grid
    item
@@ -206,24 +217,46 @@ function MovementsCard(props) {
    </Grid>
    <Grid item container>
     <List className="movements__list">
-     <Divider className="movements__divider" />
-     <ListItem>
-      <ListItemText
-       primary={`${isExpenses ? '-' : '+'}2000`}
-       primaryTypographyProps={{
-        className: `movements__${isExpenses ? 'expenses' : 'income'}`,
-       }}
-       secondary={
-        <React.Fragment>
-         <Typography component="span" variant="body2" color="textPrimary">
-          01-Jan-2020
-         </Typography>
-         {` Payroll`}
-        </React.Fragment>
+     {transactionsFiltered && transactionsFiltered.length < 0 ? (
+      transactionsFiltered.map(transaction => {
+       debugger
+       let isExpense = transaction.fromAccount.owner1.id === id
+       if (isExpense) {
+        data.datasets.data[1] = data.datasets.data[1] + transaction.amount
+       } else {
+        data.datasets.data[0] = data.datasets.data[0] + transaction.amount
        }
-      />
-     </ListItem>
-     <Divider component="li" className="movements__divider" />
+       return (
+        <ListItem>
+         <Divider className="movements__divider" />
+         <ListItemText
+          primary={`${isExpense ? '-' : '+'}${transaction.amount}`}
+          primaryTypographyProps={{
+           className: `movements__${isExpense ? 'expenses' : 'income'}`,
+          }}
+          secondary={
+           <React.Fragment>
+            <Typography component="span" variant="body2" color="textPrimary">
+             {transaction.created}
+            </Typography>
+           </React.Fragment>
+          }
+         />
+         <Divider component="li" className="movements__divider" />
+        </ListItem>
+       )
+      })
+     ) : (
+      <Grid container direction="column">
+       <Box
+        fontSize="h6.fontSize"
+        fontWeight="fontWeightMedium"
+        className="movements__message"
+       >
+        There has been no movements today...
+       </Box>
+      </Grid>
+     )}
     </List>
    </Grid>
    <Grid item>
@@ -249,10 +282,22 @@ function TranferencesCard(props) {
   handleClick,
   handleAmountChange,
   handleCancelClick,
-  currencyChange,
+  loading,
  } = props
 
- return (
+ return loading ? (
+  <Grid
+   item
+   container
+   elevation={0}
+   className="transference card"
+   component={Paper}
+   justify="center"
+   alignItems="center"
+  >
+   <CircularProgress size={70} className="transference__loader" />
+  </Grid>
+ ) : (
   <Grid
    item
    container
@@ -366,28 +411,12 @@ function TranferencesCard(props) {
       }}
       disabled={!isVerified}
       error={
-       (transference.fromAccount.currency === transference.toAccount.currency &&
-        transference.fromAccount.balance < transference.amount) ||
-       (transference.fromAccount.currency === 'USD' &&
-        transference.toAccount.currency === 'CRC' &&
-        transference.amount >
-         transference.fromAccount.currency / currencyChange) ||
-       (transference.fromAccount.currency === 'CRC' &&
-        transference.toAccount.currency === 'USD' &&
-        transference.amount >
-         transference.fromAccount.currency * currencyChange)
+       transference.fromAccount.currency === transference.toAccount.currency &&
+       transference.fromAccount.balance < transference.amount
       }
       helperText={
-       (transference.fromAccount.currency === transference.toAccount.currency &&
-        transference.fromAccount.balance < transference.amount) ||
-       (transference.fromAccount.currency === 'USD' &&
-        transference.toAccount.currency === 'CRC' &&
-        transference.amount >
-         transference.fromAccount.currency / currencyChange) ||
-       (transference.fromAccount.currency === 'CRC' &&
-        transference.toAccount.currency === 'USD' &&
-        transference.amount >
-         transference.fromAccount.currency * currencyChange)
+       transference.fromAccount.currency === transference.toAccount.currency &&
+       transference.fromAccount.balance < transference.amount
         ? `The amount is greater than the available balance.`
         : ''
       }
@@ -406,21 +435,10 @@ function TranferencesCard(props) {
        destinyAccountNumber.length < 9 ||
        transference.fromAccount.id === transference.toAccount.id ||
        transference.fromAccount.balance < transference.amount ||
-       (transference.amount.length === 0 &&
-        transference.amount <= 0 &&
-        isVerified) ||
+       (transference.amount.length === 0 && isVerified) ||
+       (transference.amount <= 0 && isVerified) ||
        (transference.fromAccount.currency === transference.toAccount.currency &&
         transference.fromAccount.balance < transference.amount &&
-        isVerified) ||
-       (transference.fromAccount.currency === 'USD' &&
-        transference.toAccount.currency === 'CRC' &&
-        transference.amount >
-         transference.fromAccount.currency / currencyChange &&
-        isVerified) ||
-       (transference.fromAccount.currency === 'CRC' &&
-        transference.toAccount.currency === 'USD' &&
-        transference.amount >
-         transference.fromAccount.currency * currencyChange &&
         isVerified)
       }
      >
@@ -446,10 +464,13 @@ function TranferencesCard(props) {
 function DashBoardPage(props) {
  const { match } = props
  //  const { currencyChange } = useCurrency()
- const { accounts } = useAccounts(match.params.id)
+ const id = match.params.id
+ let { accounts, reload } = useAccounts(id)
+ let { transactions } = useTransactions(id)
  const [page, setPage] = React.useState(0)
  const [rowsPerPage, setRowsPerPage] = React.useState(5)
  const [isExpenses, setIsExpenses] = useState(false)
+ const [loading, setLoading] = useState(false)
  const [transference, setTransference] = useState({
   amount: 0,
   fromAccount: {
@@ -459,6 +480,7 @@ function DashBoardPage(props) {
    id: 0,
   },
   currency: '',
+  exchangeRate: 0,
  })
 
  const [destinyAccountNumber, setDestinyAccountNumber] = useState('')
@@ -475,29 +497,28 @@ function DashBoardPage(props) {
 
  const handleTransferClick = () => {
   if (isVerified) {
-   let fromNewBalance = transference.amount
-   let fromAccount = transference.fromAccount
-   let toAccount = transference.toAccount
-   if (
-    transference.fromAccount.currency === 'USD' &&
-    transference.toAccount.currency === 'CRC'
-   ) {
-    fromNewBalance = transference.amount / currencyChange
-   } else if (
-    transference.fromAccount.currency === 'CRC' &&
-    transference.toAccount.currency === 'USD'
-   ) {
-    fromNewBalance = transference.amount * currencyChange
-   }
-   debugger
-   fromAccount.balance = fromAccount.balance - fromNewBalance
-   toAccount.balance = toAccount.balance + transference.amount
-   setTransference({
-    ...transference,
-    fromAccount: fromAccount,
-    toAccount: toAccount,
-   })
-   postTransaction(transference)
+   setLoading(true)
+   requestCurrency().then(
+    res => {
+     setTransference({
+      ...transference,
+      exchangeRate: res.data['quotes']['USDCRC'],
+     })
+     postTransaction(transference).then(
+      res => {
+       handleCancelClick()
+       reload()
+       setLoading(false)
+      },
+      error => {
+       notify(`The transference failed please check the amount and try again.`)
+      }
+     )
+    },
+    error => {
+     notify(`It seems to be a problem with the conection to internet.`)
+    }
+   )
   } else {
    getAccountByKey(destinyAccountNumber).then(
     res => {
@@ -518,6 +539,18 @@ function DashBoardPage(props) {
 
  const handleCancelClick = () => {
   setIsVerified(false)
+  setDestinyAccountNumber('')
+  setTransference({
+   amount: 0,
+   fromAccount: {
+    id: 0,
+   },
+   toAccount: {
+    id: 0,
+   },
+   currency: '',
+   exchangeRate: 0,
+  })
  }
  const handleChangeRowsPerPage = event => {
   setRowsPerPage(parseInt(event.target.value, 10))
@@ -545,7 +578,7 @@ function DashBoardPage(props) {
    <SideBar />
    <Grid container item md={11} className="dashboard" spacing={4}>
     <Grid item container>
-     <MovementsCard isExpenses={isExpenses} />
+     <MovementsCard isExpenses={isExpenses} transactions={transactions} />
      <AccountsCard
       accounts={accounts}
       rowsPerPage={rowsPerPage}
@@ -566,7 +599,7 @@ function DashBoardPage(props) {
       handleAmountChange={handleAmountChange}
       destinyAccount={destinyAccount}
       handleCancelClick={handleCancelClick}
-      currencyChange={currencyChange}
+      loading={loading}
      />
     </Grid>
    </Grid>

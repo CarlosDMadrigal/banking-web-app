@@ -6,13 +6,27 @@ import { useEffect, useState } from 'react'
 
 export const useAccounts = id => {
  const [accounts, setAccounts] = useState([])
+ const [reload, setReload] = useState(false)
 
  useEffect(() => {
   getAccountsByOwnerId(id).then(res => setAccounts(res.data))
   // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [])
 
- return { accounts }
+ useEffect(() => {
+  if (reload) {
+   getAccountsByOwnerId(id).then(res => setAccounts(res.data))
+   setReload(false)
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [reload])
+
+ return {
+  accounts,
+  reload: () => {
+   setReload(true)
+  },
+ }
 }
 
 export const useAccountByKey = key => {

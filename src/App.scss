@@ -100,8 +100,12 @@ html {
 
 .dashboard {
  padding-left: 17.5rem;
+ padding-top: 2.5rem;
  min-height: 98vh;
  height: auto;
+ .header {
+  background-color: $action-color;
+ }
  & .card {
   border-radius: 1rem;
   padding: 1rem;
@@ -114,6 +118,9 @@ html {
  }
  .movements {
   height: 30rem;
+  &__message {
+   color: #757575;
+  }
   &__expenses {
    color: #e74c3c;
   }
@@ -143,6 +150,9 @@ html {
 
  .transference {
   height: 13rem;
+  &__loader {
+   color: $action-color;
+  }
   &__input {
    height: 4.5rem;
    &-field {
@@ -170,5 +180,15 @@ html {
   .display {
    display: none;
   }
+ }
+}
+@media (max-width: 600px) {
+ .dashboard {
+  padding-left: 0;
+  justify-content: center;
+ }
+ .accounts {
+  margin-top: 1rem;
+  margin-left: 0;
  }
 }
