@@ -7,6 +7,7 @@ import {
  ListItem,
  ListItemIcon,
  ListItemText,
+ Box,
 } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance'
@@ -17,6 +18,9 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import { APP_NAME } from '../../appConstants'
+import { useUser } from '../../hooks/useUsers'
+import { withRouter } from 'react-router-dom'
 
 const drawerWidth = 240
 
@@ -42,7 +46,10 @@ const useStyles = makeStyles(theme => ({
    display: 'none',
   },
  },
- toolbar: theme.mixins.toolbar,
+ toolbar: {
+  theme: theme.mixins.toolbar,
+  padding: '1rem',
+ },
  drawerPaper: {
   width: drawerWidth,
  },
@@ -53,19 +60,21 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function SideBar(props) {
- const { match, history, container } = props
+ const id = sessionStorage.getItem('userId')
+ const { user } = useUser(id)
+ const { container, history } = props
  const classes = useStyles()
  const theme = useTheme()
  const [mobileOpen, setMobileOpen] = React.useState(false)
  const views = [
   {
    name: 'Home',
-   url: '/home',
+   url: '/dashboard',
    icon: <HomeIcon />,
   },
   {
    name: 'Currency Accounts',
-   url: '/accounts',
+   url: '/dashboard/accounts',
    icon: <AccountBalanceIcon />,
   },
  ]
@@ -74,12 +83,31 @@ function SideBar(props) {
   setMobileOpen(!mobileOpen)
  }
 
+ const handleClick = url => event => {
+  history.push(url)
+ }
+
  const drawer = (
   <Grid component="div">
-   <Grid component="div" className={classes.toolbar} />
+   <Grid
+    container
+    component={Box}
+    fontSize="h6.fontSize"
+    fontWeight="fontWeightMedium"
+    justify="flex-start"
+    alignItems="center"
+    className={classes.toolbar}
+   >
+    {APP_NAME}
+   </Grid>
    <List>
     {views.map((view, index) => (
-     <ListItem button key={index}>
+     <ListItem
+      button
+      key={index}
+      onClick={handleClick(view.url)}
+      className={history.location.pathname == view.url && `active-page`}
+     >
       <ListItemIcon>{view.icon}</ListItemIcon>
       <ListItemText primary={view.name} />
      </ListItem>
@@ -91,8 +119,8 @@ function SideBar(props) {
  return (
   <Grid component="div">
    <CssBaseline />
-   <AppBar position="fixed" className="header">
-    <Toolbar>
+   <AppBar position="fixed">
+    <Toolbar className="header">
      <IconButton
       color="inherit"
       aria-label="open drawer"
@@ -102,11 +130,24 @@ function SideBar(props) {
      >
       <MenuIcon />
      </IconButton>
-     <Typography variant="h6" noWrap></Typography>
+     <Typography variant="h6" noWrap>
+      {APP_NAME}
+     </Typography>
+     <Grid
+      item
+      container
+      xs={7}
+      md={12}
+      component={Box}
+      fontSize="h6.fontSize"
+      fontWeight="fontWeightMedium"
+      justify="flex-end"
+     >
+      {`Welcome, ${user && user.firstName}`}
+     </Grid>
     </Toolbar>
    </AppBar>
    <nav className={classes.drawer} aria-label="mailbox folders">
-    {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
     <Hidden smUp implementation="css">
      <Drawer
       container={container}
@@ -118,7 +159,7 @@ function SideBar(props) {
        paper: classes.drawerPaper,
       }}
       ModalProps={{
-       keepMounted: true, // Better open performance on mobile.
+       keepMounted: true,
       }}
      >
       {drawer}
@@ -139,4 +180,4 @@ function SideBar(props) {
   </Grid>
  )
 }
-export default SideBar
+export default withRouter(SideBar)

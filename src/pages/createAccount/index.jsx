@@ -16,15 +16,16 @@ function CreateAccountPage(props) {
   name: '',
   currency: 'CRC',
  })
- const { history, match } = props
+ const id = sessionStorage.getItem('userId')
+ const { history } = props
  const notify = message => {
   toast.error(message)
  }
 
  const handleSubmit = () => {
-  postAccount(accountVal, match.params.id).then(
+  postAccount(accountVal, id).then(
    response => {
-    history.push(`dashboard/${match.params.id}`)
+    history.push(`/dashboard/accounts`)
    },
    error => {
     notify(`There's a problem with the account creation.`)
@@ -46,70 +47,75 @@ function CreateAccountPage(props) {
   },
  ]
  return (
-  <Grid
-   component="section"
-   container
-   justify="center"
-   p={2}
-   className="account"
-  >
-   <Grid component="div" item xs={12} sm={12} md={8}>
-    <Paper elevation={1} className="form">
-     <Grid component="div" container direction="column">
-      <Box component="span" fontSize="h4.fontSize" className="form__title">
-       Creating Account
-      </Box>
+  <Grid className="account" container item md={11} spacing={4}>
+   <Grid item md={12}>
+    <Grid
+     item
+     container
+     elevation={0}
+     className="card"
+     component={Paper}
+     justify="center"
+    >
+     <Grid item md={12} container>
       <Grid
-       component="section"
-       container
-       direction="column"
-       justify="space-between"
-       spacing={3}
+       component={Box}
+       fontSize="h6.fontSize"
+       fontWeight="fontWeightMedium"
+       className="account__title  title"
+       item
+       xs={12}
+       md={6}
       >
-       <Grid item>
-        <TextField
-         fullWidth
-         className="form__input"
-         variant="outlined"
-         id="input-name"
-         label="Name"
-         type="text"
-         value={accountVal.name}
-         onChange={handleChange('name')}
-        />
-       </Grid>
-       <Grid item>
-        <TextField
-         id="outlined-select-currency"
-         select
-         label="Currency"
-         value={accountVal.currency}
-         onChange={handleChange('currency')}
-         variant="outlined"
-         className="form__input"
-         fullWidth
-        >
-         {currencies.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-           {option.label}
-          </MenuItem>
-         ))}
-        </TextField>
-       </Grid>
-       <Grid item m={3} container justify="flex-end">
+       Open a new account
+      </Grid>
+     </Grid>
+     <Grid component="section" md={12} container>
+      <Grid item className="account__input" md={12}>
+       <TextField
+        fullWidth
+        className="account__input-field"
+        variant="outlined"
+        label="Name"
+        type="text"
+        value={accountVal.name}
+        onChange={handleChange('name')}
+       />
+      </Grid>
+      <Grid item md={12} className="account__input">
+       <TextField
+        id="outlined-select-currency"
+        select
+        label="Currency"
+        value={accountVal.currency}
+        onChange={handleChange('currency')}
+        variant="outlined"
+        className="account__input-field"
+        fullWidth
+       >
+        {currencies.map(option => (
+         <MenuItem key={option.value} value={option.value}>
+          {option.label}
+         </MenuItem>
+        ))}
+       </TextField>
+      </Grid>
+      <Grid item md={12} container justify="flex-end">
+       <Grid item md={6} container className="account__input">
         <Button
+         item
          variant="contained"
-         onClick={handleSubmit}
-         className="form__button"
+         className="account__button"
          disableElevation
-         size="large"
+         onClick={handleSubmit}
+         fullWidth
         >
-         Submit
+         Confirm
         </Button>
        </Grid>
       </Grid>
      </Grid>
-    </Paper>
+    </Grid>
    </Grid>
   </Grid>
  )

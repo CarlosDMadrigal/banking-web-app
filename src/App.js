@@ -15,12 +15,15 @@ function App() {
    <Router>
     <Switch>
      <Route path="/register" component={RegisterPage} />
-     <Route path="/dashboard/:id" component={DashBoardPage} />
-     <Route path="/account/create/:id" component={CreateAccountPage} />
+     <Route path="/dashboard/" component={DashBoardPage} />
      <Route path="/" component={LogInPage} />
      {/* <Route path="/registration/" component={RegisterPage} /> */}
     </Switch>
-    <ToastContainer autoClose={false} position={toast.POSITION.BOTTOM_RIGHT} />
+    <ToastContainer
+     autoClose={false}
+     position={toast.POSITION.BOTTOM_RIGHT}
+     className="toast-alert"
+    />
    </Router>
   </div>
  )

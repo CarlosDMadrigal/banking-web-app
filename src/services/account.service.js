@@ -1,10 +1,13 @@
 import { request } from './api.service'
 export function postAccount(account, ownerId) {
- return request('post', `account/?ownerId=${ownerId}`, account)
+ let header = { jwt: sessionStorage.getItem('jwt') }
+ return request('post', `account/?ownerId=${ownerId}`, account, header)
 }
 export function getAccountByKey(accountKey) {
- return request('get', `account/?accountKey=${accountKey}`)
+ let header = { jwt: sessionStorage.getItem('jwt') }
+ return request('get', `account/?accountKey=${accountKey}`, null, header)
 }
 export function getAccountsByOwnerId(ownerId) {
- return request('get', `account/?ownerId=${ownerId}`)
+ let header = { jwt: sessionStorage.getItem('jwt') }
+ return request('get', `account/?ownerId=${ownerId}`, null, header)
 }

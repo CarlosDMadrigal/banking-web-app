@@ -5,8 +5,10 @@ export const useUser = id => {
  const [user, setUser] = useState({})
 
  useEffect(() => {
-  setUser(getUserByIdNumber)
- }, [id])
+  getUserByIdNumber(id).then(res => {
+   setUser(res.data)
+  })
+ }, [])
 
- return user
+ return { user }
 }

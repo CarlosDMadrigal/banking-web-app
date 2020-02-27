@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
  Grid,
  Paper,
@@ -171,7 +171,7 @@ function SecurityInformation({ values, handleChange }) {
      error={values.validation.password}
      helperText={
       values.validation.password
-       ? 'The password must be at least 6 characters to 8 max'
+       ? 'The password must be between 6 and 8 characters'
        : ''
      }
      id="input-first-password"
@@ -280,6 +280,9 @@ function RegisteredNotification(props) {
  )
 }
 function RegisterPage(props) {
+ useEffect(() => {
+  'jwt' in sessionStorage && history.push('/dashboard/home')
+ })
  const [values, setValues] = useState({
   activeStep: 1,
   steps: [
@@ -314,6 +317,7 @@ function RegisterPage(props) {
   },
   forms: [true, true, true],
  })
+ const { history } = props
  const [isRegistered, setIsRegistered] = useState(false)
 
  const notify = (message, error) => {
@@ -339,7 +343,7 @@ function RegisterPage(props) {
     ...values.steps[2],
    }).then(
     response => {
-     setIsRegistered(true)
+     history.push('/')
     },
     error => {
      notify(
@@ -439,16 +443,12 @@ function RegisterPage(props) {
   >
    <Grid component="div" item xs={12} sm={12} md={8}>
     <Paper elevation={1} className="form">
-     {isRegistered ? (
-      <RegisteredNotification />
-     ) : (
-      <RegistrationForm
-       values={values}
-       handleChange={handleChange}
-       handleNext={handleNext}
-       handleBack={handleBack}
-      />
-     )}
+     <RegistrationForm
+      values={values}
+      handleChange={handleChange}
+      handleNext={handleNext}
+      handleBack={handleBack}
+     />
     </Paper>
    </Grid>
   </Grid>

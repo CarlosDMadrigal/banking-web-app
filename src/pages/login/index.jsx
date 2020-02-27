@@ -1,9 +1,12 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Grid, Box, TextField, Button, Typography } from '@material-ui/core'
 import { toast } from 'react-toastify'
-import { logIn } from '../../services/user.service'
+import { logIn, getUserByEmailAndPassword } from '../../services/user.service'
 function LogInPage(props) {
+ useEffect(() => {
+  'jwt' in sessionStorage && history.push('/dashboard/home')
+ })
  const [logInValues, setLogInValues] = useState({
   email: '',
   password: '',
@@ -25,7 +28,12 @@ function LogInPage(props) {
   logIn(logInValues.email, logInValues.password).then(
    response => {
     sessionStorage.setItem('jwt', response.data)
-    history.push('/dashboard')
+    getUserByEmailAndPassword(logInValues.email, logInValues.password).then(
+     res => {
+      sessionStorage.setItem('userId', res.data.id)
+      history.push('/dashboard/home/')
+     }
+    )
    },
    error => {
     notify(`Seems like your login information is incorrect.`, true)

@@ -1,4 +1,7 @@
-import { getTransactionsByUserId } from '../services/transaction.service'
+import {
+ getTransactionsByUserId,
+ getTransactionsByAccountKey,
+} from '../services/transaction.service'
 import { useEffect, useState } from 'react'
 
 export const useTransactions = id => {
@@ -6,6 +9,18 @@ export const useTransactions = id => {
 
  useEffect(() => {
   getTransactionsByUserId(id).then(res => {
+   setTransactions(res.data)
+  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [])
+
+ return { transactions }
+}
+export const useTransactionsByAccount = id => {
+ const [transactions, setTransactions] = useState([])
+
+ useEffect(() => {
+  getTransactionsByAccountKey(id).then(res => {
    setTransactions(res.data)
   })
   // eslint-disable-next-line react-hooks/exhaustive-deps
