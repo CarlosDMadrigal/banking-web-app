@@ -4,18 +4,18 @@ import {
 } from '../services/account.service'
 import { useEffect, useState } from 'react'
 
-export const useAccounts = id => {
+export const useAccounts = (id, jwt) => {
  const [accounts, setAccounts] = useState([])
  const [reload, setReload] = useState(false)
 
  useEffect(() => {
-  getAccountsByOwnerId(id).then(res => setAccounts(res.data))
+  getAccountsByOwnerId(id,jwt).then(res => setAccounts(res.data))
   // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [])
 
  useEffect(() => {
   if (reload) {
-   getAccountsByOwnerId(id).then(res => setAccounts(res.data))
+   getAccountsByOwnerId(id, jwt).then(res => setAccounts(res.data))
    setReload(false)
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps

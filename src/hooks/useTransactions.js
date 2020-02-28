@@ -4,11 +4,11 @@ import {
 } from '../services/transaction.service'
 import { useEffect, useState } from 'react'
 
-export const useTransactions = id => {
+export const useTransactions = (id, jwt) => {
  const [transactions, setTransactions] = useState([])
 
  useEffect(() => {
-  getTransactionsByUserId(id).then(res => {
+  getTransactionsByUserId(id, jwt).then(res => {
    setTransactions(res.data)
   })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -16,11 +16,11 @@ export const useTransactions = id => {
 
  return { transactions }
 }
-export const useTransactionsByAccount = id => {
+export const useTransactionsByAccount = (id, jwt) => {
  const [transactions, setTransactions] = useState([])
 
  useEffect(() => {
-  getTransactionsByAccountKey(id).then(res => {
+  getTransactionsByAccountKey(id, jwt).then(res => {
    setTransactions(res.data)
   })
   // eslint-disable-next-line react-hooks/exhaustive-deps

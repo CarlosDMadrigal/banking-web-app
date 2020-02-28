@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 import { toast } from 'react-toastify'
 import { postUser } from '../../services/user.service'
-import MailIcon from '@material-ui/icons/Mail'
+// import MailIcon from '@material-ui/icons/Mail'
 
 function PersonalInformation({ values, handleChange }) {
  return (
@@ -264,21 +264,21 @@ function RegistrationForm({ values, handleChange, handleNext, handleBack }) {
  )
 }
 
-function RegisteredNotification(props) {
- return (
-  <Grid component="div" container direction="column">
-   <Box component="span" fontSize="h4.fontSize" className="notification__title">
-    Registration Success!
-   </Box>
-   <Box component="p" fontSize="h5.fontSize" fontWeight="fontWeightThin">
-    A confirmation email has been sent so you can activate your account.
-   </Box>
-   <Grid component="div" container justify="center">
-    <MailIcon className="notification__icon" />
-   </Grid>
-  </Grid>
- )
-}
+// function RegisteredNotification(props) {
+//  return (
+//   <Grid component="div" container direction="column">
+//    <Box component="span" fontSize="h4.fontSize" className="notification__title">
+//     Registration Success!
+//    </Box>
+//    <Box component="p" fontSize="h5.fontSize" fontWeight="fontWeightThin">
+//     A confirmation email has been sent so you can activate your account.
+//    </Box>
+//    <Grid component="div" container justify="center">
+//     <MailIcon className="notification__icon" />
+//    </Grid>
+//   </Grid>
+//  )
+// }
 function RegisterPage(props) {
  useEffect(() => {
   'jwt' in sessionStorage && history.push('/dashboard/home')
@@ -318,7 +318,7 @@ function RegisterPage(props) {
   forms: [true, true, true],
  })
  const { history } = props
- const [isRegistered, setIsRegistered] = useState(false)
+//  const [isRegistered, setIsRegistered] = useState(false)
 
  const notify = (message, error) => {
   if (error) {

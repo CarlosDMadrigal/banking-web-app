@@ -6,7 +6,6 @@ import LogInPage from './pages/login'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import CreateAccountPage from './pages/createAccount'
 import DashBoardPage from './pages/dashboard'
 
 function App() {

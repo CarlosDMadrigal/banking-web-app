@@ -3,9 +3,12 @@ import { useState, useEffect } from 'react'
 import { Grid, Box, TextField, Button, Typography } from '@material-ui/core'
 import { toast } from 'react-toastify'
 import { logIn, getUserByEmailAndPassword } from '../../services/user.service'
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import { logo } from '../../img/symbol.svg'
+
 function LogInPage(props) {
  useEffect(() => {
-  'jwt' in sessionStorage && history.push('/dashboard/home')
+  'jwt' in sessionStorage && history.push('/dashboard')
  })
  const [logInValues, setLogInValues] = useState({
   email: '',
@@ -28,12 +31,14 @@ function LogInPage(props) {
   logIn(logInValues.email, logInValues.password).then(
    response => {
     sessionStorage.setItem('jwt', response.data)
-    getUserByEmailAndPassword(logInValues.email, logInValues.password).then(
-     res => {
-      sessionStorage.setItem('userId', res.data.id)
-      history.push('/dashboard/home/')
-     }
-    )
+    getUserByEmailAndPassword(
+     logInValues.email,
+     logInValues.password,
+     response.data
+    ).then(res => {
+     sessionStorage.setItem('userId', res.data.id)
+     history.push('/dashboard')
+    })
    },
    error => {
     notify(`Seems like your login information is incorrect.`, true)
@@ -44,7 +49,19 @@ function LogInPage(props) {
   setLogInValues({ ...logInValues, [props]: event.target.value })
  }
  return (
-  <Grid container justify="center" alignItems="center" m={2} className="log-in">
+  <Grid container justify="center" alignItems="center" className="log-in">
+   <Grid item container justify="flex-start">
+    <Grid
+     component={Box}
+     fontSize="h4.fontSize"
+     alignItems="center"
+     item
+     container
+     xs={12}
+     md={6}
+     className="header-log"
+    ></Grid>
+   </Grid>
    <Grid
     item
     container

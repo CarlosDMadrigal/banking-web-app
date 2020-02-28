@@ -1,13 +1,21 @@
 import React from 'react'
+import { useState } from 'react'
 import {
  Grid,
  Drawer,
- CssBaseline,
  List,
  ListItem,
  ListItemIcon,
  ListItemText,
  Box,
+ Menu,
+ MenuItem,
+ Avatar,
+ Popper,
+ Paper,
+ ClickAwayListener,
+ Grow,
+ MenuList,
 } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance'
@@ -21,6 +29,8 @@ import Typography from '@material-ui/core/Typography'
 import { APP_NAME } from '../../appConstants'
 import { useUser } from '../../hooks/useUsers'
 import { withRouter } from 'react-router-dom'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 
 const drawerWidth = 240
 
@@ -52,6 +62,8 @@ const useStyles = makeStyles(theme => ({
  },
  drawerPaper: {
   width: drawerWidth,
+  backgroundColor: '#3539ac',
+  color: '#ffff',
  },
  content: {
   flexGrow: 1,
@@ -61,7 +73,8 @@ const useStyles = makeStyles(theme => ({
 
 function SideBar(props) {
  const id = sessionStorage.getItem('userId')
- const { user } = useUser(id)
+ const jwt = sessionStorage.getItem('jwt')
+ const { user } = useUser(id, jwt)
  const { container, history } = props
  const classes = useStyles()
  const theme = useTheme()
@@ -78,7 +91,31 @@ function SideBar(props) {
    icon: <AccountBalanceIcon />,
   },
  ]
+ const [open, setOpen] = React.useState(false)
+ const anchorRef = React.useRef(null)
 
+ const handleToggle = () => {
+  setOpen(prevOpen => !prevOpen)
+ }
+
+ const handleClose = event => {
+  if (anchorRef.current && anchorRef.current.contains(event.target)) {
+   return
+  }
+
+  setOpen(false)
+ }
+
+ function handleListKeyDown(event) {
+  if (event.key === 'Tab') {
+   event.preventDefault()
+   setOpen(false)
+  }
+ }
+ const handleLogout = () => {
+  sessionStorage.clear()
+  history.push('/')
+ }
  const handleDrawerToggle = () => {
   setMobileOpen(!mobileOpen)
  }
@@ -98,6 +135,7 @@ function SideBar(props) {
     alignItems="center"
     className={classes.toolbar}
    >
+    <AttachMoneyIcon />
     {APP_NAME}
    </Grid>
    <List>
@@ -106,9 +144,9 @@ function SideBar(props) {
       button
       key={index}
       onClick={handleClick(view.url)}
-      className={history.location.pathname == view.url && `active-page`}
+      className={`${history.location.pathname === view.url && `active-page`}`}
      >
-      <ListItemIcon>{view.icon}</ListItemIcon>
+      <ListItemIcon className="sidebar-icon">{view.icon}</ListItemIcon>
       <ListItemText primary={view.name} />
      </ListItem>
     ))}
@@ -118,9 +156,8 @@ function SideBar(props) {
 
  return (
   <Grid component="div">
-   <CssBaseline />
-   <AppBar position="fixed">
-    <Toolbar className="header">
+   <AppBar position="fixed" className="header" elevation={1}>
+    <Toolbar className="header__name">
      <IconButton
       color="inherit"
       aria-label="open drawer"
@@ -131,20 +168,64 @@ function SideBar(props) {
       <MenuIcon />
      </IconButton>
      <Typography variant="h6" noWrap>
+      <AttachMoneyIcon />
       {APP_NAME}
      </Typography>
+     <Grid item container xs={0} md={2}></Grid>
      <Grid
       item
       container
       xs={7}
-      md={12}
+      md={11}
       component={Box}
       fontSize="h6.fontSize"
       fontWeight="fontWeightMedium"
-      justify="flex-end"
+      justify="space-between"
+      alignItems="center"
      >
-      {`Welcome, ${user && user.firstName}`}
+      {`Welcome, ${user && user.firstName}`}{' '}
+      <IconButton
+       ref={anchorRef}
+       aria-label="logout"
+       className="logout-button"
+       onClick={handleToggle}
+      >
+       <Avatar className="logout-button__icon">
+        {user.firstName ? user.firstName.charAt(0).toUpperCase() : ''}
+       </Avatar>
+      </IconButton>
+      <Popper
+       open={open}
+       anchorEl={anchorRef.current}
+       role={undefined}
+       transition
+       disablePortal
+      >
+       {({ TransitionProps, placement }) => (
+        <Grow
+         {...TransitionProps}
+         style={{
+          transformOrigin:
+           placement === 'bottom' ? 'center top' : 'center bottom',
+         }}
+        >
+         <Paper>
+          <ClickAwayListener onClickAway={handleClose}>
+           <MenuList
+            autoFocusItem={open}
+            id="menu-list-grow"
+            onKeyDown={handleListKeyDown}
+           >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+           </MenuList>
+          </ClickAwayListener>
+         </Paper>
+        </Grow>
+       )}
+      </Popper>
      </Grid>
+     <Grid item container xs={0} md={1}></Grid>
     </Toolbar>
    </AppBar>
    <nav className={classes.drawer} aria-label="mailbox folders">

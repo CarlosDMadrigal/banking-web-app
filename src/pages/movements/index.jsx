@@ -5,32 +5,30 @@ import {
  Box,
  List,
  ListItem,
- Button,
  Divider,
  ListSubheader,
 } from '@material-ui/core'
 import { useTransactionsByAccount } from '../../hooks/useTransactions'
 
 function MovementsPage(props) {
- const { history, match } = props
+ const { match } = props
  const id = match.params.id
- let { transactions } = useTransactionsByAccount(id)
- const handleClick = accountKey => event => {
-  history.push(`/detail/${accountKey}`)
- }
+ const jwt = sessionStorage.getItem('jwt')
+
+ let { transactions } = useTransactionsByAccount(id, jwt)
  return (
   <Grid className="transactions" container item md={11} spacing={4}>
    <Grid item md={12}>
     <Grid
      item
      container
-     elevation={0}
+     elevation={1}
      className=" card"
      component={Paper}
      justify="center"
      alignItems="center"
     >
-     <Grid item md={12}>
+     <Grid item md={12} className="transactions__head">
       <Grid
        container
        component={Box}
@@ -42,7 +40,6 @@ function MovementsPage(props) {
       >
        Your Account Movements
       </Grid>
-      <Grid item></Grid>
      </Grid>
      <Grid item container>
       <List className="transactions__list">
@@ -58,7 +55,7 @@ function MovementsPage(props) {
            xs={12}
            md={3}
           >
-           Origin
+           Origin Account
           </Grid>
           <Grid
            component={Box}
@@ -88,11 +85,10 @@ function MovementsPage(props) {
            xs={12}
            md={3}
           >
-           Destiny
+           Destiny Account
           </Grid>
          </Grid>
         </ListItem>
-
         <Divider component="li" className="transactions__divider" />
        </ListSubheader>
        {transactions &&

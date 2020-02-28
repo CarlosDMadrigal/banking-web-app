@@ -14,7 +14,8 @@ import { useAccounts } from '../../hooks/useAccounts'
 function AccountsPage(props) {
  const { history } = props
  const id = sessionStorage.getItem('userId')
- let { accounts, reload } = useAccounts(id)
+ const jwt = sessionStorage.getItem('jwt')
+ let { accounts } = useAccounts(id, jwt)
  const handleClick = accountKey => event => {
   history.push(`/dashboard/movements/${accountKey}`)
  }
@@ -27,14 +28,15 @@ function AccountsPage(props) {
     <Grid
      item
      container
-     elevation={0}
+     elevation={1}
      className=" card"
      component={Paper}
      justify="center"
      alignItems="center"
     >
-     <Grid item md={12} container>
+     <Grid item md={12} container className="accounts__head">
       <Grid
+       container
        component={Box}
        fontSize="h6.fontSize"
        fontWeight="fontWeightMedium"

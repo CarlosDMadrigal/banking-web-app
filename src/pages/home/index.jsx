@@ -28,7 +28,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { useAccounts } from '../../hooks/useAccounts'
 import { useTransactions } from '../../hooks/useTransactions'
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn'
-import { Doughnut } from 'react-chartjs-2'
+// import { Doughnut } from 'react-chartjs-2'
 import { toast } from 'react-toastify'
 import { requestCurrency } from '../../services/currency.service'
 import { postTransaction } from '../../services/transaction.service'
@@ -90,13 +90,12 @@ function AccountsCard(props) {
   <Grid
    item
    container
-   justify="center"
    component={Paper}
    className="accounts-card card"
-   elevation={0}
+   elevation={1}
    xs={12}
    sm={12}
-   md={12}
+   md={7}
    lg={7}
   >
    <Grid
@@ -112,7 +111,7 @@ function AccountsCard(props) {
    </Grid>
    <Grid container item>
     <TableContainer>
-     <Table size="small" className="accounts__table">
+     <Table size="small" className="accounts-card__table">
       <EnhancedTableHead rowCount={accounts.length} />
       <TableBody>
        {accounts
@@ -161,7 +160,7 @@ function AccountsCard(props) {
  )
 }
 function MovementsCard(props) {
- let { isExpenses, transactions, id } = props
+ let { transactions, id } = props
  const data = {
   labels: ['Incomes', 'Expenses'],
   datasets: [
@@ -172,6 +171,7 @@ function MovementsCard(props) {
   ],
  }
 
+ // eslint-disable-next-line array-callback-return
  let transactionsFiltered = transactions.map(transaction => {
   if (transaction.fromAccount.owner1.id !== transaction.toAccount.owner1.id) {
    return transaction
@@ -184,10 +184,10 @@ function MovementsCard(props) {
    justify="center"
    component={Paper}
    className="movements card"
-   elevation={0}
+   elevation={1}
    xs={12}
    sm={12}
-   md={12}
+   md={4}
    lg={4}
   >
    <Grid
@@ -256,13 +256,13 @@ function MovementsCard(props) {
      <Divider className="movements__divider" />
     </List>
    </Grid>
-   <Grid item>
+   {/* <Grid item>
     <Box
      fontSize="h6.fontSize"
      fontWeight="fontWeightMedium"
      className={`movements__detail`}
     ></Box>
-   </Grid>
+   </Grid> */}
   </Grid>
  )
 }
@@ -286,7 +286,7 @@ function TranferencesCard(props) {
   <Grid
    item
    container
-   elevation={0}
+   elevation={1}
    className="transference card"
    component={Paper}
    justify="center"
@@ -298,7 +298,7 @@ function TranferencesCard(props) {
   <Grid
    item
    container
-   elevation={0}
+   elevation={1}
    className="transference card"
    component={Paper}
   >
@@ -354,7 +354,7 @@ function TranferencesCard(props) {
     >
      <ArrowForwardIosIcon className="transference__icon" />
     </Grid>
-    <Grid item xs={12} sm={12} md={12} lg={5} className="transference__input">
+    <Grid item xs={12} sm={12} md={6} className="transference__input">
      {!isVerified ? (
       <TextField
        fullWidth
@@ -397,7 +397,7 @@ function TranferencesCard(props) {
       />
      )}
     </Grid>
-    <Grid item xs={12} sm={12} md={12} lg={5} className="transference__input">
+    <Grid item xs={12} sm={12} md={5} className="transference__input">
      <TextField
       fullWidth
       className="transference__input-field"
@@ -439,7 +439,6 @@ function TranferencesCard(props) {
        transference.fromAccount.id === 0 ||
        destinyAccountNumber.length < 9 ||
        transference.fromAccount.id === transference.toAccount.id ||
-       transference.fromAccount.balance < transference.amount ||
        (transference.amount.length === 0 && isVerified) ||
        (transference.amount <= 0 && isVerified) ||
        (transference.fromAccount.currency === transference.toAccount.currency &&
@@ -469,11 +468,11 @@ function TranferencesCard(props) {
 function HomePage(props) {
  //  const { currencyChange } = useCurrency()
  const id = sessionStorage.getItem('userId')
- let { accounts, reload } = useAccounts(id)
- let { transactions } = useTransactions(id)
+ const jwt = sessionStorage.getItem('jwt')
+ let { accounts, reload } = useAccounts(id, jwt)
+ let { transactions } = useTransactions(id, jwt)
  const [page, setPage] = React.useState(0)
  const [rowsPerPage, setRowsPerPage] = React.useState(5)
- const [isExpenses, setIsExpenses] = useState(false)
  const [loading, setLoading] = useState(false)
  const [transference, setTransference] = useState({
   amount: 0,
@@ -511,7 +510,7 @@ function HomePage(props) {
      let newTransf = transference
      newTransf.exchangeRate = res.data['quotes']['USDCRC']
 
-     postTransaction(newTransf).then(
+     postTransaction(newTransf, jwt).then(
       res => {
        handleCancelClick()
        reload()
@@ -531,7 +530,7 @@ function HomePage(props) {
     }
    )
   } else {
-   getAccountByKey(destinyAccountNumber).then(
+   getAccountByKey(destinyAccountNumber, jwt).then(
     res => {
      setDestinyAccount(res.data)
      setIsVerified(true)
@@ -587,7 +586,7 @@ function HomePage(props) {
  return (
   <Grid container item md={11} className="home">
    <Grid item container>
-    <MovementsCard isExpenses={isExpenses} transactions={transactions} />
+    <MovementsCard transactions={transactions} />
     <AccountsCard
      accounts={accounts}
      rowsPerPage={rowsPerPage}

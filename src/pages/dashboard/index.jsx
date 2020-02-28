@@ -9,7 +9,7 @@ import MovementsPage from '../movements'
 import CreateAccountPage from '../createAccount'
 
 function DashBoardPage(props) {
- const { match, history } = props
+ const { history } = props
  useEffect(() => {
   !('jwt' in sessionStorage) && history.push('/login')
  })
