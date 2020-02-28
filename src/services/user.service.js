@@ -1,7 +1,11 @@
 import { request } from './api.service'
 export function postUser(user) {
- let header = { Authentication: sessionStorage.getItem('jwt') }
- return request('post', `register`, user, header)
+ return request('post', `register/`, user)
+}
+
+export function putUser(user, jwt) {
+ let header = { Authentication: jwt }
+ return request('put', `user/`, user, header)
 }
 
 export function logIn(email, password) {
@@ -18,8 +22,6 @@ export function getUserByEmailAndPassword(email, password, jwt) {
  )
 }
 export function getUserByIdNumber(id, jwt) {
- console.log(jwt)
  let header = { Authentication: jwt }
- console.log(header)
  return request('get', `user/?id=${id}`, null, header)
 }

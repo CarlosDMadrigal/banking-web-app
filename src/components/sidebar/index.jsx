@@ -31,6 +31,7 @@ import { useUser } from '../../hooks/useUsers'
 import { withRouter } from 'react-router-dom'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import { ReactComponent as Logo } from '../../img/symbol.svg'
 
 const drawerWidth = 240
 
@@ -135,8 +136,7 @@ function SideBar(props) {
     alignItems="center"
     className={classes.toolbar}
    >
-    <AttachMoneyIcon />
-    {APP_NAME}
+    <Logo />
    </Grid>
    <List>
     {views.map((view, index) => (
@@ -167,11 +167,15 @@ function SideBar(props) {
      >
       <MenuIcon />
      </IconButton>
-     <Typography variant="h6" noWrap>
-      <AttachMoneyIcon />
-      {APP_NAME}
-     </Typography>
-     <Grid item container xs={0} md={2}></Grid>
+
+     <Grid
+      component={Typography}
+      variant="h6"
+      item
+      container
+      xs={3}
+      md={3}
+     ></Grid>
      <Grid
       item
       container
@@ -216,7 +220,12 @@ function SideBar(props) {
             id="menu-list-grow"
             onKeyDown={handleListKeyDown}
            >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClick('/dashboard/profile')}>
+             Edit Profile
+            </MenuItem>
+            <MenuItem onClick={handleClick('/dashboard/password')}>
+             Change Password
+            </MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
            </MenuList>
           </ClickAwayListener>

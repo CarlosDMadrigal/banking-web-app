@@ -28,7 +28,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { useAccounts } from '../../hooks/useAccounts'
 import { useTransactions } from '../../hooks/useTransactions'
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn'
-// import { Doughnut } from 'react-chartjs-2'
+import { Doughnut } from 'react-chartjs-2'
 import { toast } from 'react-toastify'
 import { requestCurrency } from '../../services/currency.service'
 import { postTransaction } from '../../services/transaction.service'
@@ -170,11 +170,11 @@ function MovementsCard(props) {
    },
   ],
  }
-
  // eslint-disable-next-line array-callback-return
- let transactionsFiltered = transactions.map(transaction => {
+ let transactionsFiltered = []
+ transactions.forEach(transaction => {
   if (transaction.fromAccount.owner1.id !== transaction.toAccount.owner1.id) {
-   return transaction
+   transactionsFiltered.push(transaction)
   }
  })
  return (
@@ -210,34 +210,41 @@ function MovementsCard(props) {
        display: false,
       },
      }}
+     className="movements__graphic"
     />
    </Grid> */}
    <Grid item container>
+    <Divider className="movements__divider" />
     <List className="movements__list">
-     <Divider className="movements__divider" />
-     {transactionsFiltered && transactionsFiltered.length < 0 ? (
+     {transactionsFiltered && transactionsFiltered.length > 0 ? (
       transactionsFiltered.map(transaction => {
-       let isExpense = transaction.fromAccount.owner1.id === id
-       if (isExpense) {
-        data.datasets.data[1] = data.datasets.data[1] + transaction.amount
+       let isExpense = transaction.fromAccount.owner1.id == id
+       var d = new Date(transaction.created)
+       d.setTime(d.getTime() + d.getTimezoneOffset())
+       var hour = d.getHours()
+       var time
+       if (hour > 12) {
+        time = 'PM'
+        var hour = hour - 12
        } else {
-        data.datasets.data[0] = data.datasets.data[0] + transaction.amount
+        time = 'AM'
+       }
+       var minute = d.getMinutes()
+       var formatted = hour + ':' + minute + ' ' + time
+       if (isExpense) {
+        data.datasets[0].data[1] = data.datasets[0].data[1] + transaction.amount
+       } else {
+        data.datasets[0].data[0] = data.datasets[0].data[0] + transaction.amount
        }
        return (
         <ListItem>
          <ListItemText
           primary={`${isExpense ? '-' : '+'}${transaction.amount}`}
           primaryTypographyProps={{
-           className: `movements__${isExpense ? 'expenses' : 'income'}`,
+           className: `movements__${isExpense ? 'expenses' : 'income'} `,
           }}
-          secondary={
-           <React.Fragment>
-            <Typography component="span" variant="body2" color="textPrimary">
-             {transaction.created}
-            </Typography>
-           </React.Fragment>
-          }
          />
+         {formatted}
         </ListItem>
        )
       })
@@ -252,9 +259,8 @@ function MovementsCard(props) {
        </Box>
       </Grid>
      )}
-
-     <Divider className="movements__divider" />
     </List>
+    <Divider className="movements__divider" />
    </Grid>
    {/* <Grid item>
     <Box
@@ -470,7 +476,7 @@ function HomePage(props) {
  const id = sessionStorage.getItem('userId')
  const jwt = sessionStorage.getItem('jwt')
  let { accounts, reload } = useAccounts(id, jwt)
- let { transactions } = useTransactions(id, jwt)
+ let { transactions, reloadTransaction } = useTransactions(id, jwt)
  const [page, setPage] = React.useState(0)
  const [rowsPerPage, setRowsPerPage] = React.useState(5)
  const [loading, setLoading] = useState(false)
@@ -514,6 +520,7 @@ function HomePage(props) {
       res => {
        handleCancelClick()
        reload()
+       reloadTransaction()
        setLoading(false)
        notify(`The transference was successful!`)
       },
@@ -586,7 +593,7 @@ function HomePage(props) {
  return (
   <Grid container item md={11} className="home">
    <Grid item container>
-    <MovementsCard transactions={transactions} />
+    <MovementsCard transactions={transactions} id={id} />
     <AccountsCard
      accounts={accounts}
      rowsPerPage={rowsPerPage}

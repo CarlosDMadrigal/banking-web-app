@@ -94,6 +94,7 @@ function MovementsPage(props) {
        {transactions &&
         transactions.length > 0 &&
         transactions.map(value => {
+         debugger
          return (
           <ListItem
            key={value.id}
@@ -130,7 +131,9 @@ function MovementsPage(props) {
              xs={6}
              md={3}
             >
-             {` ${value.currency === 'USD' ? '$' : '₡'} ${value.amount}`}
+             {` ${value.fromAccount.accountKey == id ? '-' : '+'} ${
+              value.currency === 'USD' ? '$' : '₡'
+             }${value.amount}`}
             </Grid>
             <Grid
              component={Box}

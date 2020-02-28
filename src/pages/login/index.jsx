@@ -4,7 +4,7 @@ import { Grid, Box, TextField, Button, Typography } from '@material-ui/core'
 import { toast } from 'react-toastify'
 import { logIn, getUserByEmailAndPassword } from '../../services/user.service'
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
-import { logo } from '../../img/symbol.svg'
+import { ReactComponent as Logo } from '../../img/symbol.svg'
 
 function LogInPage(props) {
  useEffect(() => {
@@ -60,7 +60,9 @@ function LogInPage(props) {
      xs={12}
      md={6}
      className="header-log"
-    ></Grid>
+    >
+     <Logo />
+    </Grid>
    </Grid>
    <Grid
     item

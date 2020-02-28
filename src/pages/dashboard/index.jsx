@@ -7,6 +7,8 @@ import HomePage from '../home'
 import AccountsPage from '../accounts'
 import MovementsPage from '../movements'
 import CreateAccountPage from '../createAccount'
+import ProfilePage from '../profile'
+import PasswordPage from '../password'
 
 function DashBoardPage(props) {
  const { history } = props
@@ -17,6 +19,8 @@ function DashBoardPage(props) {
   <Grid>
    <SideBar />
    <Switch>
+    <Route path="/dashboard/password" component={PasswordPage} />
+    <Route path="/dashboard/profile" component={ProfilePage} />
     <Route path="/dashboard/movements/:id" component={MovementsPage} />
     <Route path="/dashboard/home" component={HomePage} />
     <Route path="/dashboard/accounts" component={AccountsPage} />

@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import { postAccount } from '../../services/account.service'
 
 function CreateAccountPage(props) {
+ const jwt = sessionStorage.getItem('jwt')
  const [accountVal, setAccountVal] = useState({
   name: '',
   currency: 'CRC',
@@ -23,7 +24,7 @@ function CreateAccountPage(props) {
  }
 
  const handleSubmit = () => {
-  postAccount(accountVal, id).then(
+  postAccount(accountVal, id, jwt).then(
    response => {
     history.push(`/dashboard/accounts`)
    },
@@ -101,7 +102,7 @@ function CreateAccountPage(props) {
        </TextField>
       </Grid>
       <Grid item md={12} container justify="flex-end">
-       <Grid item md={6} container className="account__input">
+       <Grid item md={6} container className="account__submit">
         <Button
          item
          variant="contained"

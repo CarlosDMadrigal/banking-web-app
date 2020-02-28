@@ -11,5 +11,5 @@ export const useUser = (id, jwt) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [])
 
- return { user }
+ return { user, setUser }
 }

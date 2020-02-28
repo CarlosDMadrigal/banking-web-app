@@ -318,7 +318,7 @@ function RegisterPage(props) {
   forms: [true, true, true],
  })
  const { history } = props
-//  const [isRegistered, setIsRegistered] = useState(false)
+ //  const [isRegistered, setIsRegistered] = useState(false)
 
  const notify = (message, error) => {
   if (error) {
@@ -346,6 +346,7 @@ function RegisterPage(props) {
      history.push('/')
     },
     error => {
+     debugger
      notify(
       `Ups it seems like the identification number or email are already registered.`,
       true
