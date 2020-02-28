@@ -94,9 +94,7 @@ function AccountsCard(props) {
    className="accounts-card card"
    elevation={1}
    xs={12}
-   sm={12}
    md={7}
-   lg={7}
   >
    <Grid
     component={Box}
@@ -186,9 +184,7 @@ function MovementsCard(props) {
    className="movements card"
    elevation={1}
    xs={12}
-   sm={12}
    md={4}
-   lg={4}
   >
    <Grid
     component={Box}

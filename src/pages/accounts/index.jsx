@@ -65,12 +65,7 @@ function AccountsPage(props) {
        <ListSubheader className="list-header">
         <Divider component="li" className="accounts__divider" />
         <ListItem role={undefined} dense className="accounts__list-item">
-         <Grid
-          container
-          justify="center"
-          alignItems="center"
-          display={{ xs: 'none', sm: 'none', md: 'block', lg: 'block' }}
-         >
+         <Grid container justify="center" alignItems="center">
           <Grid
            component={Box}
            fontSize="h7.fontSize"
@@ -175,15 +170,26 @@ function AccountsPage(props) {
             >
              {`${value.currency === 'USD' ? '$' : '₡'} ${value.balance}`}
             </Grid>
-            <Button
-             variant="contained"
-             className="accounts__list-button"
-             disableElevation
-             size="large"
-             onClick={handleClick(value.accountKey)}
+            <Grid
+             component={Box}
+             fontSize="h7.fontSize"
+             fontWeight="fontWeightMedium"
+             item
+             xs={6}
+             md={2}
             >
-             Movements
-            </Button>
+             <Button
+              variant="contained"
+              className="accounts__list-button"
+              disableElevation
+              item
+              md={1}
+              size="large"
+              onClick={handleClick(value.accountKey)}
+             >
+              Movements
+             </Button>
+            </Grid>
            </Grid>
           </ListItem>
          )
