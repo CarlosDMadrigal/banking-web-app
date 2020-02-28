@@ -130,7 +130,7 @@ function AccountsCard(props) {
            <TableCell>{account.currency}</TableCell>
            <TableCell align="center">{`${
             account.currency === 'USD' ? '$' : '₡'
-           } ${account.balance}`}</TableCell>
+           }${account.balance}`}</TableCell>
            <TableCell></TableCell>
           </TableRow>
          )
