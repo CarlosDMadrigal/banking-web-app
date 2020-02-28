@@ -65,7 +65,12 @@ function AccountsPage(props) {
        <ListSubheader className="list-header">
         <Divider component="li" className="accounts__divider" />
         <ListItem role={undefined} dense className="accounts__list-item">
-         <Grid container justify="center" alignItems="center">
+         <Grid
+          container
+          justify="center"
+          alignItems="center"
+          display={{ xs: 'none', sm: 'none', md: 'block', lg: 'block' }}
+         >
           <Grid
            component={Box}
            fontSize="h7.fontSize"
@@ -183,7 +188,6 @@ function AccountsPage(props) {
           </ListItem>
          )
         })}
-
        <Divider component="li" className="accounts__divider" />
       </List>
      </Grid>

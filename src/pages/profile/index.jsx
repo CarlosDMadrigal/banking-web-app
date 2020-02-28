@@ -66,21 +66,26 @@ function ProfilePage(props) {
    setUser({ ...user, [props]: event.target.value })
   }
  }
- const notify = message => {
-  toast.error(message)
+ const notify = (message, error) => {
+  if (error) {
+   toast.error(message)
+  } else {
+   toast.success(message)
+  }
  }
 
  const handleClick = () => {
   putUser(user, jwt).then(
    res => {
-    history.push('/dashboard/profile')
+    notify('Update succesful.')
+    history.push('/')
    },
-   error => notify('Error with the server.')
+   error => notify('Error with the server.', true)
   )
  }
  return (
-  <Grid className="profile" container item md={11} spacing={4}>
-   <Grid item md={12}>
+  <Grid className="profile" container item xs={12} md={11}>
+   <Grid item xs={12} md={12}>
     <Grid
      item
      container
@@ -90,7 +95,7 @@ function ProfilePage(props) {
      justify="center"
      alignItems="center"
     >
-     <Grid item md={12} container className="">
+     <Grid item xs={12} md={12} container className="">
       <Grid
        container
        component={Box}
@@ -125,8 +130,8 @@ function ProfilePage(props) {
          </Grid>
         )
        })}
-      <Grid item md={12} container justify="flex-end">
-       <Grid item md={6} container className="profile__submit">
+      <Grid item xs={12} md={12} container justify="flex-end">
+       <Grid item xs={6} md={6} container className="profile__submit">
         <Button
          item
          variant="contained"

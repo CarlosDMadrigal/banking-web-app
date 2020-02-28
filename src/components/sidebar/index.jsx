@@ -167,19 +167,11 @@ function SideBar(props) {
      >
       <MenuIcon />
      </IconButton>
-
-     <Grid
-      component={Typography}
-      variant="h6"
-      item
-      container
-      xs={3}
-      md={3}
-     ></Grid>
+     <Grid item xs={1} md={3}></Grid>
      <Grid
       item
       container
-      xs={7}
+      xs={11}
       md={11}
       component={Box}
       fontSize="h6.fontSize"
@@ -234,7 +226,7 @@ function SideBar(props) {
        )}
       </Popper>
      </Grid>
-     <Grid item container xs={0} md={1}></Grid>
+     <Grid item container xs={1} md={1}></Grid>
     </Toolbar>
    </AppBar>
    <nav className={classes.drawer} aria-label="mailbox folders">

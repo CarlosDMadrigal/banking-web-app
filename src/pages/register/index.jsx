@@ -337,6 +337,7 @@ function RegisterPage(props) {
   if (values.activeStep < 3) {
    setValues({ ...values, activeStep: values.activeStep + 1 })
   } else {
+   debugger
    postUser({
     ...values.steps[0],
     ...values.steps[1],
@@ -346,7 +347,6 @@ function RegisterPage(props) {
      history.push('/')
     },
     error => {
-     debugger
      notify(
       `Ups it seems like the identification number or email are already registered.`,
       true

@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import { Grid, Box, TextField, Button, Typography } from '@material-ui/core'
 import { toast } from 'react-toastify'
 import { logIn, getUserByEmailAndPassword } from '../../services/user.service'
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
-import { ReactComponent as Logo } from '../../img/symbol.svg'
 
 function LogInPage(props) {
  useEffect(() => {
@@ -50,20 +48,6 @@ function LogInPage(props) {
  }
  return (
   <Grid container justify="center" alignItems="center" className="log-in">
-   <Grid item container justify="flex-start">
-    <Grid
-     component={Box}
-     fontSize="h4.fontSize"
-     alignItems="center"
-     item
-     container
-     xs={12}
-     md={6}
-     className="header-log"
-    >
-     <Logo />
-    </Grid>
-   </Grid>
    <Grid
     item
     container

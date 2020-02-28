@@ -62,7 +62,7 @@ function MovementsPage(props) {
            fontSize="h7.fontSize"
            fontWeight="fontWeightMedium"
            item
-           xs={12}
+           xs={6}
            md={3}
           >
            Currency
@@ -72,7 +72,7 @@ function MovementsPage(props) {
            fontSize="h7.fontSize"
            fontWeight="fontWeightMedium"
            item
-           xs={12}
+           xs={6}
            md={3}
           >
            Amount
@@ -94,7 +94,6 @@ function MovementsPage(props) {
        {transactions &&
         transactions.length > 0 &&
         transactions.map(value => {
-         debugger
          return (
           <ListItem
            key={value.id}

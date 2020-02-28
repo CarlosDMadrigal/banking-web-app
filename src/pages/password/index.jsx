@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Paper, Box, Button, TextField } from '@material-ui/core'
 import { useUser } from '../../hooks/useUsers'
 import { useState } from 'react'
-import { putUser } from '../../services/user.service'
+import { putUser, putUserPassword } from '../../services/user.service'
 import { toast } from 'react-toastify'
 
 function PasswordPage(props) {
@@ -63,119 +63,127 @@ function PasswordPage(props) {
   }
   setPasswords({ ...passwords, [props]: event.target.value })
  }
- const notify = message => {
-  toast.error(message)
+ const notify = (message, error) => {
+  if (error) {
+   toast.error(message)
+  } else {
+   toast.success(message)
+  }
  }
 
  const handleClick = () => {
-  //    putUser(user, jwt).then(
-  //     res => {
-  //      history.push('/dashboard/')
-  //     },
-  //     error => notify('Error with the server.')
-  //    )
+  debugger
+  putUserPassword(user, passwords.oldPassword, passwords.newPassword, jwt).then(
+   res => {
+    notify('Password changed.')
+    history.push('/dashboard/')
+   },
+   error => notify(`The old password field doesn't match your password.`, true)
+  )
  }
  return (
   <Grid className="password" container item md={11} spacing={4}>
    <Grid item md={12}>
-    <Grid
-     item
-     container
-     elevation={1}
-     className="password__card card"
-     component={Paper}
-     justify="center"
-     alignItems="center"
-    >
-     <Grid item md={12} container className="">
-      <Grid
-       container
-       component={Box}
-       fontSize="h6.fontSize"
-       fontWeight="fontWeightMedium"
-       className="password__title"
-       item
-       alignItems="flex-end"
-       xs={12}
-       md={12}
-      >
-       Change your password
+    {user.userKey && (
+     <Grid
+      item
+      container
+      elevation={1}
+      className="password__card card"
+      component={Paper}
+      justify="center"
+      alignItems="center"
+     >
+      <Grid item md={12} container className="">
+       <Grid
+        container
+        component={Box}
+        fontSize="h6.fontSize"
+        fontWeight="fontWeightMedium"
+        className="password__title"
+        item
+        alignItems="flex-end"
+        xs={12}
+        md={12}
+       >
+        Change your password
+       </Grid>
       </Grid>
-     </Grid>
-     <Grid item container>
-      <Grid item xs={12}>
-       <TextField
-        fullWidth
-        required
-        type="password"
-        className="password__input"
-        variant="outlined"
-        error={flags.oldPassword}
-        helperText={flags.oldPassword ? `The password don't match` : ''}
-        label={`Old Password`}
-        value={passwords.oldPassword}
-        onChange={handleChange('oldPassword')}
-       />
-      </Grid>
-      <Grid item xs={12}>
-       <TextField
-        fullWidth
-        required
-        type="password"
-        className="password__input"
-        variant="outlined"
-        error={flags.newPassword}
-        helperText={
-         flags.newPassword
-          ? `The new password must be between 6 and 8 characters.`
-          : ''
-        }
-        label={`New Password`}
-        value={passwords.newPassword}
-        onChange={handleChange('newPassword')}
-       />
-      </Grid>
-      <Grid item xs={12}>
-       <TextField
-        fullWidth
-        required
-        type="password"
-        className="password__input"
-        variant="outlined"
-        error={flags.confirmationPassword}
-        helperText={
-         flags.confirmationPassword
-          ? `This field must match with the new password.`
-          : ''
-        }
-        label={`Confirm New Password`}
-        value={passwords.confirmationPassword}
-        onChange={handleChange('confirmationPassword')}
-       />
-      </Grid>
-      <Grid item md={12} container justify="flex-end">
-       <Grid item md={6} container className="password__submit">
-        <Button
-         item
-         variant="contained"
-         className="password__button"
-         disableElevation
+      <Grid item container>
+       <Grid item xs={12}>
+        <TextField
          fullWidth
-         onClick={handleClick}
-         disabled={
-          passwords.oldPassword.length === 0 ||
-          passwords.newPassword.length === 0 ||
-          passwords.confirmationPassword.length === 0 ||
-          flags.confirmationPassword ||
+         required
+         type="password"
+         className="password__input"
+         variant="outlined"
+         error={flags.oldPassword}
+         helperText={flags.oldPassword ? `The password don't match` : ''}
+         label={`Old Password`}
+         value={passwords.oldPassword}
+         onChange={handleChange('oldPassword')}
+        />
+       </Grid>
+       <Grid item xs={12}>
+        <TextField
+         fullWidth
+         required
+         type="password"
+         className="password__input"
+         variant="outlined"
+         error={flags.newPassword}
+         helperText={
           flags.newPassword
+           ? `The new password must be between 6 and 8 characters.`
+           : ''
          }
-        >
-         Confirm
-        </Button>
+         label={`New Password`}
+         value={passwords.newPassword}
+         onChange={handleChange('newPassword')}
+        />
+       </Grid>
+       <Grid item xs={12}>
+        <TextField
+         fullWidth
+         required
+         type="password"
+         className="password__input"
+         variant="outlined"
+         error={flags.confirmationPassword}
+         helperText={
+          flags.confirmationPassword
+           ? `This field must match with the new password.`
+           : ''
+         }
+         label={`Confirm New Password`}
+         value={passwords.confirmationPassword}
+         onChange={handleChange('confirmationPassword')}
+        />
+       </Grid>
+       <Grid item xs={12} md={12} container justify="flex-end">
+        <Grid item xs={6} md={6} container className="password__submit">
+         <Button
+          item
+          variant="contained"
+          className="password__button"
+          disableElevation
+          fullWidth
+          onClick={handleClick}
+          disabled={
+           passwords.oldPassword.length === 0 ||
+           passwords.newPassword.length === 0 ||
+           passwords.confirmationPassword.length === 0 ||
+           flags.confirmationPassword ||
+           flags.newPassword
+          }
+         >
+          Confirm
+         </Button>
+        </Grid>
        </Grid>
       </Grid>
      </Grid>
-    </Grid>
+    )}
    </Grid>
   </Grid>
  )

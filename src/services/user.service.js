@@ -21,6 +21,16 @@ export function getUserByEmailAndPassword(email, password, jwt) {
   header
  )
 }
+
+export function putUserPassword(user, olPassword, newPassword, jwt) {
+ let header = { Authentication: jwt }
+ return request(
+  'put',
+  `user/?oldPassword=${olPassword}&newPassword=${newPassword}`,
+  user,
+  header
+ )
+}
 export function getUserByIdNumber(id, jwt) {
  let header = { Authentication: jwt }
  return request('get', `user/?id=${id}`, null, header)

@@ -66,13 +66,13 @@ function CreateAccountPage(props) {
        className="account__title  title"
        item
        xs={12}
-       md={6}
+       md={12}
       >
        Open a new account
       </Grid>
      </Grid>
-     <Grid component="section" md={12} container>
-      <Grid item className="account__input" md={12}>
+     <Grid component="section" xs={12} md={12} container>
+      <Grid item className="account__input" xs={12} md={12}>
        <TextField
         fullWidth
         className="account__input-field"
@@ -83,7 +83,7 @@ function CreateAccountPage(props) {
         onChange={handleChange('name')}
        />
       </Grid>
-      <Grid item md={12} className="account__input">
+      <Grid item xs={12} md={12} className="account__input">
        <TextField
         id="outlined-select-currency"
         select
@@ -101,8 +101,8 @@ function CreateAccountPage(props) {
         ))}
        </TextField>
       </Grid>
-      <Grid item md={12} container justify="flex-end">
-       <Grid item md={6} container className="account__submit">
+      <Grid item xs={12} md={12} container justify="flex-end">
+       <Grid item xs={6} md={6} container className="account__submit">
         <Button
          item
          variant="contained"

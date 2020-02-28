@@ -376,10 +376,15 @@ div .header {
  }
 }
 @media (max-width: 600px) {
- .home {
-  padding-left: 0;
-  justify-content: center;
+ .transactions {
   padding: 1rem;
+  padding-top: 5.5rem;
+  justify-content: center;
+ }
+ .home {
+  padding: 1rem;
+  padding-top: 2rem;
+  justify-content: center;
   .accounts-card {
    margin-left: 0;
   }
@@ -404,7 +409,7 @@ div .header {
  }
  .log-in .form {
   padding: 2rem;
-  padding-top: 12rem;
+  padding-top: 2rem;
  }
  .accounts {
   padding-left: 0;
@@ -412,8 +417,39 @@ div .header {
   padding: 1rem;
  }
  .transactions {
-  padding-left: 0;
-  justify-content: center;
   padding: 1rem;
+  padding-top: 3rem;
+  justify-content: center;
+
+  .transactions__head {
+   height: auto;
+  }
+ }
+ .account {
+  padding: 1rem;
+  padding-top: 3rem;
+ }
+ .accounts {
+  padding: 1rem;
+  padding-top: 3rem;
+  .accounts__head {
+   height: auto;
+   margin-bottom: 0.5rem;
+  }
+  .MuiList-padding {
+   padding-top: 0;
+  }
+ }
+ .profile {
+  padding: 1rem;
+  padding-top: 4rem;
+ }
+ .password {
+  padding: 1rem;
+  padding-top: 3rem;
+  .card {
+   border-radius: 0.5rem;
+   padding: 2rem;
+  }
  }
 }
